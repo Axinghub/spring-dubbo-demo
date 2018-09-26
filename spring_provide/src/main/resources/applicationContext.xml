@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+
+<!-- 使注解起作用的配置，扫描注解 -->
+<context:component-scan base-package="com.axing">
+<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+<context:exclude-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
+</context:component-scan>
+
+<!-- dubbo配置-->
+<import resource="classpath:dubboConfig.xml"/>
+
+<!-- 导入外部资源文件 -->
+<context:property-placeholder location="classpath:db.properties"/>
+<!-- 配置数据源 -->
+<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+<property name="driverClass" value="${className}"></property>
+<property name="jdbcUrl" value="${url}"></property>
+<property name="user" value="${user}"></property>
+<property name="password" value="${pwd}"></property>
+</bean>
+
+<!-- 配置事务管理器 -->
+<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+ <property name="dataSource" ref="dataSource"></property>
+</bean>
+
+<!-- 扫描事务注解 -->
+<tx:annotation-driven transaction-manager="transactionManager"/>
+
+<!-- 整合mybatis-->
+<!-- 获取sqlSessionFactoryBean -->
+<bean id="sqlSessionFactoryBean" class="org.mybatis.spring.SqlSessionFactoryBean">
+  <property name="dataSource" ref="dataSource"></property>
+  <!-- 指定mybatis全局配置文件的位置 -->
+  <property name="configLocation" value="classpath:mybatis-config.xml"></property>
+  <!-- 指定sql映射文件的位置 -->
+  <property name="mapperLocations" value="classpath:com/axing/dao/*.xml"></property>
+</bean>
+
+<!-- 获取sqlsession -->
+<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+  <constructor-arg name="sqlSessionFactory" ref="sqlSessionFactoryBean"></constructor-arg>
+  <constructor-arg name="executorType" value="BATCH"></constructor-arg>
+</bean>
+
+<!-- 将所有接口的实现注册到Spring中 -->
+<!-- <mybatis-spring:scan base-package="com.chinasofti.dao"/> -->
+<mybatis-spring:scan base-package="com.axing.dao"></mybatis-spring:scan>
+</beans>

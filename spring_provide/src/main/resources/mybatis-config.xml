@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	
+<!-- mybatis的设置项 -->
+	<settings>
+		<!-- 将数据库以驼峰式的命名形式与属性对应 -->
+		<setting name="mapUnderscoreToCamelCase" value="true" />
+		<!-- 使oracle支持null -->
+		<setting name="jdbcTypeForNull" value="NULL" />
+		<!-- 延迟加载 -->
+		<setting name="lazyLoadingEnabled" value="true" />
+		<setting name="aggressiveLazyLoading" value="false" />
+		<!-- 开启全局缓存 -->
+		<setting name="cacheEnabled" value="true" />
+	</settings>
+
+	<!-- 别名处理器 -->
+	<typeAliases>
+	<!-- 为某个类起别名，默认为类名首字母小写 -->
+		<!-- <typeAlias type="com.chinasofti.entity.Student" alias="stu" /> -->
+	<!-- 为指定包下所有的类起别名 -->
+		<package name="com.axing.entity"/>
+	</typeAliases>
+	
+
+	<databaseIdProvider type="DB_VENDOR">
+		<!-- 为不同的数据库厂商起一个别名 -->
+		<property name="MySQL" value="mysql" />
+		<property name="Oracle" value="oracle" />
+		<property name="SQL Server" value="sqlserver" />
+	</databaseIdProvider>
+
+	<!-- 将sql映射文件注册到全局配置文件中 -->
+	<!-- <mappers>
+		<mapper class="com.chinasofti.dao.StudentDao" />
+		<mapper resource="com\chinasofti\dao\StudentDao.xml"/>
+		<package name="com.chinasofti.dao" />
+	</mappers> -->
+
+</configuration>
